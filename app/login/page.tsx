@@ -1,11 +1,17 @@
 'use client'
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
+import {getCaptcha} from "@/api/login/api";
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
+    useEffect(() => {
+        // 打印环境变量
+        console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+        const res = getCaptcha()
+        console.log(res)
+    }, []);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
