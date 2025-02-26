@@ -1,9 +1,8 @@
-// import About from '@/app/about/page'
-import List from "@/app/list/page";
+import Login from "@/app/login/page";
+
 
 export default function Home() {
     return (
-        // <About/>
-        <List/>
+        <Login/>
     );
 }

@@ -20,7 +20,7 @@ export default function List() {
         // 去重：根据 value 字段去重
         const uniqueData = data.filter(
             (v, index, self) =>
-                index === self.findIndex((t) => t.value === v.value)  // 查找第一个相同的值
+                index === self.findIndex((t) => t.value === v.value)
         );
 
         setList(uniqueData);
