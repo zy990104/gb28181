@@ -2,10 +2,11 @@ import axios from 'axios';
 
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL, // 设置默认API URL
+    // baseURL: process.env.NEXT_PUBLIC_API_URL, // 设置默认API URL
+    // baseURL: "https://chat.oldwei.com", // 设置默认API URL
     timeout: 10000, // 请求超时时间
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
     },
 });
 
@@ -13,10 +14,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         // 可以在这里添加 token 或其他请求头
-        const token = localStorage.getItem('token'); // 例如从 localStorage 获取 token
-        if (token) {
+        const token = `123`;
+
+        // 排除验证码和登录请求，其他请求添加 token
+        if (token && !config.url?.includes('captcha') && !config.url?.includes('login')) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
+
         return config;
     },
     (error) => {
@@ -27,7 +31,7 @@ axiosInstance.interceptors.request.use(
 // 响应拦截器
 axiosInstance.interceptors.response.use(
     (response) => {
-        return response.data; // 直接返回 data 部分
+        return response; // 直接返回 data 部分
     },
     (error) => {
         if (error.response) {

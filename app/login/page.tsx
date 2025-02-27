@@ -1,35 +1,67 @@
-'use client'
+'use client';
 import {useEffect, useState} from 'react';
-import {getCaptcha} from "@/api/login/api";
+import {getCaptcha, login} from "@/api/login/api";
+import {CaptchaResponse, LoginFormData} from "@/api/login/types";
+import {useRouter} from 'next/navigation';
+import {setLoginToken} from "@/utils/cookies";
 
-export default function Login() {
+
+function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [captcha, setCaptcha] = useState('');
+    const [captchaId, setCaptchaId] = useState('');
+    const [captchaImage, setCaptchaImage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    useEffect(() => {
-        // 打印环境变量
-        console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
-        const res = getCaptcha()
-        console.log(res)
-    }, []);
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const router = useRouter();
+    // 获取验证码
+    const handleGetCaptcha = async () => {
+        const res: CaptchaResponse = await getCaptcha(); // 假设getCaptcha已经实现
 
-        // 模拟简单的验证
-        if (username === '' || password === '') {
-            setErrorMessage('用户名或密码不能为空');
-            return;
-        }
-
-        // 模拟登录成功（这里可以加入实际的登录逻辑）
-        if (username === 'admin' && password === '123456') {
-            alert('登录成功!');
-            // 跳转或其他逻辑
+        if (res.code === 0) {
+            // 设置验证码图片和captchaId
+            setCaptchaImage(res.data.picPath);
+            setCaptchaId(res.data.captchaId);
         } else {
-            setErrorMessage('用户名或密码错误');
+            setErrorMessage('验证码获取失败');
         }
     };
 
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // 校验表单
+        if (username === '' || password === '' || captcha === '') {
+            setErrorMessage('用户名、密码或验证码不能为空');
+            return;
+        }
+
+        try {
+            const data: LoginFormData = {
+                username: username,
+                password: password,
+                captcha: captcha,
+                captchaId: captchaId,
+            }
+            const res = await login(data)
+            // 模拟登录请求，传递账号、密码和验证码
+
+            if (res.code === 0) {
+                const expiresIn = 3600 * 2; // 假设 token 有效期为 1 小时
+                setLoginToken(res.data.token, expiresIn); // 存储 token 和过期时间
+                router.push('/home');  // 跳转到home页面
+            } else {
+                setErrorMessage('用户名、密码或验证码错误');
+            }
+        } catch (error) {
+            setErrorMessage(`请求失败，请重试：${error}`);
+        }
+    };
+
+    useEffect(() => {
+        handleGetCaptcha().then();
+    }, []);
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <div className="w-full max-w-md p-8 bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -55,6 +87,25 @@ export default function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+
+                    {/* 验证码输入框和图片 */}
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">验证码</label>
+                        <div className="flex items-center">
+
+                            <input
+                                type="text"
+                                className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="请输入验证码"
+                                value={captcha}
+                                onChange={(e) => setCaptcha(e.target.value)}
+                            />
+                            {captchaImage ? (
+                                <img src={captchaImage} alt="验证码" className="w-24 h-8 mr-2"/>
+                            ) : null}
+                        </div>
+                    </div>
+
                     {errorMessage && (
                         <div className="text-red-500 text-sm mb-4">{errorMessage}</div>
                     )}
@@ -74,3 +125,5 @@ export default function Login() {
         </div>
     );
 }
+
+export default Login

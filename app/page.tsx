@@ -1,8 +1,7 @@
-import Login from "@/app/login/page";
+import Home from "@/app/home/page";
 
-
-export default function Home() {
+export default function Homepage() {
     return (
-        <Login/>
+        <Home/>
     );
 }

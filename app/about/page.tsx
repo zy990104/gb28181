@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import {useState} from 'react';
 
-export default function HomePage() {
+function HomePage() {
     // 模拟的监控设备列表
     const devices = [
         '设备 1', '设备 2', '设备 3', '设备 4',
@@ -105,11 +105,11 @@ export default function HomePage() {
                         height: '100%',  // 确保 grid 容器充满容器高度
                     }}
                 >
-                    {Array.from({ length: gridLayout }).map((_, index) => (
+                    {Array.from({length: gridLayout}).map((_, index) => (
                         <div key={index} className="relative w-full h-full bg-gray-900">
                             <div
                                 className="w-full h-full bg-black flex items-center justify-center text-white text-xl rounded"
-                                style={{ backgroundColor: selectedDevice ? 'transparent' : 'gray' }}
+                                style={{backgroundColor: selectedDevice ? 'transparent' : 'gray'}}
                             >
                                 {selectedDevice ? (
                                     <video
@@ -124,7 +124,8 @@ export default function HomePage() {
                                 )}
                             </div>
                             {selectedDevice && (
-                                <div className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-50 p-1 rounded">
+                                <div
+                                    className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-50 p-1 rounded">
                                     {selectedDevice}
                                 </div>
                             )}
@@ -135,3 +136,5 @@ export default function HomePage() {
         </div>
     );
 }
+
+export default HomePage

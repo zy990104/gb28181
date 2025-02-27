@@ -7,8 +7,7 @@ interface Data {
     type: number,
     id: string
 }
-
-export default function List() {
+function List() {
     const [value, setValue] = useState('');
     const [list, setList] = useState<Data[]>([]);
     const handleClick = () => {
@@ -93,3 +92,5 @@ export default function List() {
         </div>
     )
 }
+
+export default List
