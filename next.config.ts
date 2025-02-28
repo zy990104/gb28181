@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
         return [
             {
                 source: '/:path*',
-                destination: 'https://chat.oldwei.com/api/:path*',// The external API URL
+                destination: 'https://chat.oldwei.com/:path*',// The external API URL
             },
         ];
     },

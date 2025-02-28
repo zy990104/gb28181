@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react';
 import {getCaptcha, login} from "@/api/login/api";
 import {CaptchaResponse, LoginFormData} from "@/api/login/types";
 import {useRouter} from 'next/navigation';
-import {setLoginToken} from "@/utils/cookies";
 
 
 function Login() {
@@ -48,9 +47,8 @@ function Login() {
             // 模拟登录请求，传递账号、密码和验证码
 
             if (res.code === 0) {
-                const expiresIn = 3600 * 2; // 假设 token 有效期为 1 小时
-                setLoginToken(res.data.token, expiresIn); // 存储 token 和过期时间
                 router.push('/home');  // 跳转到home页面
+
             } else {
                 setErrorMessage('用户名、密码或验证码错误');
             }
